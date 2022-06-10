@@ -1,0 +1,18 @@
+name: Deploy Frontend
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: docker build -t rzuliann/react-test -f ./client/Dockerfile.dev ./client
+      - run: docker run -e CI=true rzuliann/react-test npm test
+      - run: docker build -t rzuliann/multi-client ./client
+      - run: docker build -t rzuliann/multi-nginx ./nginx
+      - run: docker build -t rzuliann/multi-server ./server
+      - run: docker build -t rzuliann/multi-worker ./worker
+  
